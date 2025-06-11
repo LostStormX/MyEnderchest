@@ -28,16 +28,20 @@ public final class myenderchest_plugin extends JavaPlugin {
         // Registering Tree
         LiteralCommandNode<CommandSourceStack> root = Commands.literal("enderchest")
                 .executes(ctx -> {
+                    getLogger().info("command ran");
+
                     CommandSender sender = ctx.getSource().getSender();
                     Entity executor = ctx.getSource().getExecutor();
 
                     // checks weather if the executer is a player
                     if (!(executor instanceof Player player)) {
-                        sender.sendMessage(ChatColor.RED + "Only players can run this command");
+                        sender.sendMessage("Only players can run this command");
                         return Command.SINGLE_SUCCESS;
                     }
 
-                    getLogger().info("command ran");
+                    // opens the customMenu
+                    customMenu customMenu = new customMenu(this);
+                    player.openInventory(customMenu.getInventory());
 
 
                     return Command.SINGLE_SUCCESS;

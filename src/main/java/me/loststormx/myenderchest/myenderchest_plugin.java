@@ -25,7 +25,10 @@ public final class myenderchest_plugin extends JavaPlugin {
         // Plugin startup logic
         getLogger().info("MyEnderChest Online");
 
-        // Registering Tree
+        // Registering Listeners
+        getServer().getPluginManager().registerEvents(new onClose(), this);
+
+        // Registering Command Tree
         LiteralCommandNode<CommandSourceStack> root = Commands.literal("enderchest")
                 .executes(ctx -> {
                     getLogger().info("command ran");
@@ -42,6 +45,7 @@ public final class myenderchest_plugin extends JavaPlugin {
                     // opens the customMenu
                     customMenu customMenu = new customMenu(this);
                     player.openInventory(customMenu.getInventory());
+
 
 
                     return Command.SINGLE_SUCCESS;

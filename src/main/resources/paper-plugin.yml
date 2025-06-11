@@ -1,9 +1,4 @@
 name: MyEnderchest
 version: '1.0-SNAPSHOT'
-main: me.loststormx.myenderchest.Myenderchest
+main: me.loststormx.myenderchest.myenderchest_plugin
 api-version: '1.21'
-commands:
-  enderchest:
-    description: Opens the players enderchest.
-    aliases: e
-    usage: /enderchest

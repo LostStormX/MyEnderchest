@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.sql.DriverManager;
 
 
 public final class myenderchest_plugin extends JavaPlugin {
@@ -24,6 +25,9 @@ public final class myenderchest_plugin extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
         getLogger().info("MyEnderChest Online");
+
+        // Database
+        database.main();
 
         // Registering Listeners
         getServer().getPluginManager().registerEvents(new onClose(), this);
@@ -46,7 +50,9 @@ public final class myenderchest_plugin extends JavaPlugin {
                     customMenu customMenu = new customMenu(this);
                     player.openInventory(customMenu.getInventory());
 
-
+                    // creates new dataTable
+                    var url = "jdbc:sqlite:enderchestDATA";
+                    try (var connection = DriverManager.getConnection(url))
 
                     return Command.SINGLE_SUCCESS;
                 })
@@ -66,8 +72,6 @@ public final class myenderchest_plugin extends JavaPlugin {
             commands.registrar().register(root); });
 
         }
-
-
 
     @Override
     public void onDisable() {

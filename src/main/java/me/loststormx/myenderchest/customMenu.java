@@ -1,7 +1,11 @@
 package me.loststormx.myenderchest;
 
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
+
+import java.lang.reflect.Array;
 
 public class customMenu implements InventoryHolder {
 
@@ -14,5 +18,9 @@ public class customMenu implements InventoryHolder {
     @Override
     public Inventory getInventory() {
         return this.inventory;
+    }
+
+    public void setContents(ItemStack[] items) {
+        this.inventory.setContents(items);
     }
 }

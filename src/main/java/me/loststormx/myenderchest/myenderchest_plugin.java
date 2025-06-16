@@ -1,5 +1,6 @@
 package me.loststormx.myenderchest;
 
+import com.google.common.base.Strings;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -17,6 +18,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 
 public final class myenderchest_plugin extends JavaPlugin {
@@ -51,8 +53,10 @@ public final class myenderchest_plugin extends JavaPlugin {
                     player.openInventory(customMenu.getInventory());
 
                     // creates new dataTable
-                    var url = "jdbc:sqlite:enderchestDATA";
-                    try (var connection = DriverManager.getConnection(url))
+                    String playerName = player.getName();
+                    String playerid = String.valueOf(player.getUniqueId());
+
+                    database.tableCreation(playerid);
 
                     return Command.SINGLE_SUCCESS;
                 })

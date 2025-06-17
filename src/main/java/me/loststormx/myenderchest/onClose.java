@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.sql.Driver;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class onClose implements Listener {
 
@@ -24,8 +25,21 @@ public class onClose implements Listener {
             var player = event.getPlayer();
             String playerid = String.valueOf(player.getUniqueId());
 
-            byte[] bytes = ItemStack.serializeItemsAsBytes(inventory.getContents());
-            database.dataUpdate(playerid, bytes);
+            String url = "jdbc:sqlite:enderchestDATA";
+            var sql = "UPDATE " + playerid + ","
+                    + "items = ? ";
+
+            try (var connection = DriverManager.getConnection(url);
+                 var pstmt = connection.prepareStatement(sql)) {
+                byte[] items = ItemStack.serializeItemsAsBytes(inventory.getContents());
+
+                pstmt.setBytes(1, items);
+                pstmt.executeUpdate();
+
+            } catch (SQLException error) {
+                Bukkit.getLogger().warning(error.getMessage());
+
+            }
         }
     }
 }

@@ -38,7 +38,6 @@ public class onClose implements Listener {
 
             } catch (SQLException error) {
                 Bukkit.getLogger().warning(error.getMessage());
-
             }
         }
     }

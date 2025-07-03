@@ -16,6 +16,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.codehaus.plexus.util.cli.Commandline;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -28,12 +29,6 @@ public final class myenderchest_plugin extends JavaPlugin {
         // Plugin startup logic
         getLogger().info("MyEnderChest Online");
 
-        // Database
-        database.main();
-
-        // Registering Listeners
-        getServer().getPluginManager().registerEvents(new onClose(), this);
-
         // Registering Command Tree
         LiteralCommandNode<CommandSourceStack> root = Commands.literal("enderchest")
                 .executes(ctx -> {
@@ -42,27 +37,24 @@ public final class myenderchest_plugin extends JavaPlugin {
                     CommandSender sender = ctx.getSource().getSender();
                     Entity executor = ctx.getSource().getExecutor();
 
-                    // checks weather if the executer is a player
+                    // checks whether if the executer is a player
                     if (!(executor instanceof Player player)) {
                         sender.sendMessage("Only players can run this command");
                         return Command.SINGLE_SUCCESS;
                     }
 
-                    // opens the customMenu
-                    customMenu customMenu = new customMenu(this);
-                    player.openInventory(customMenu.getInventory());
-
-                    // creates new dataTable
-                    String playerName = player.getName();
-                    String playerid = String.valueOf(player.getUniqueId());
-
-                    database.tableCreation(playerid);
+                    // opens the players enderchest
+                    player.openInventory(player.getEnderChest());
 
                     return Command.SINGLE_SUCCESS;
                 })
 
-                //.then(Commands.literal("enderchest view")
-                //.executes(ctx -> {
+                .then(Commands.literal("enderchest view")
+                .executes(ctx -> {
+                    String argumentProvided = ctx.getArgument("player", String.class);
+
+                    return Command.SINGLE_SUCCESS;
+                })
 
                 //  }))
                 //.then(Commands.literal("enderchest clear")

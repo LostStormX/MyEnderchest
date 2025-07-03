@@ -1,25 +1,18 @@
 package me.loststormx.myenderchest;
 
-import com.google.common.base.Strings;
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import com.sun.jdi.Bootstrap;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
-import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import me.loststormx.myenderchest.Database.dbConnection;
+import me.loststormx.myenderchest.Database.dbCreation;
+import me.loststormx.myenderchest.EventListeners.onInventoryClose;
+import me.loststormx.myenderchest.EventListeners.onInventoryOpen;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.codehaus.plexus.util.cli.Commandline;
-
-import java.sql.DriverManager;
-import java.sql.SQLException;
 
 
 public final class myenderchest_plugin extends JavaPlugin {
@@ -27,7 +20,18 @@ public final class myenderchest_plugin extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
+
+        // Creating the main db
+        dbCreation.creation();
+
+        // Connect to the main db
+        dbConnection.connect();
+
         getLogger().info("MyEnderChest Online");
+
+        // Registering Listeners
+        getServer().getPluginManager().registerEvents(new onInventoryClose(), this);
+        getServer().getPluginManager().registerEvents(new onInventoryOpen(), this);
 
         // Registering Command Tree
         LiteralCommandNode<CommandSourceStack> root = Commands.literal("enderchest")
@@ -44,17 +48,18 @@ public final class myenderchest_plugin extends JavaPlugin {
                     }
 
                     // opens the players enderchest
-                    player.openInventory(player.getEnderChest());
+                    customInventory customInventory = new customInventory(this);
+                    player.openInventory(customInventory.getInventory());
 
                     return Command.SINGLE_SUCCESS;
                 })
 
-                .then(Commands.literal("enderchest view")
-                .executes(ctx -> {
-                    String argumentProvided = ctx.getArgument("player", String.class);
+                //.then(Commands.literal("enderchest view")
+                //.executes(ctx -> {
+                  //  String argumentProvided = ctx.getArgument("player", String.class);
 
-                    return Command.SINGLE_SUCCESS;
-                })
+                    //return Command.SINGLE_SUCCESS;
+                //})
 
                 //  }))
                 //.then(Commands.literal("enderchest clear")
@@ -63,6 +68,8 @@ public final class myenderchest_plugin extends JavaPlugin {
                 //    }))
 
                 .build();
+
+
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
             commands.registrar().register(root); });
